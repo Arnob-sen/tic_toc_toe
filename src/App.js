@@ -14,7 +14,7 @@ export default function Board() {
         if(squares[i]||winnercalc(squares))return;
         
         const nextsquare=squares.slice();
-        if(zero)nextsquare[i]='0';
+        if(zero)nextsquare[i]='O';
         else nextsquare[i]='X';
 
         setSquares(nextsquare);
@@ -22,13 +22,22 @@ export default function Board() {
 
     }
     const winner=winnercalc(squares);
-    let status;
-     if(winner)status='winner is'+winner;
-     else status= 'next player:' +(zero ? 'O': 'X')
+    let status,c=0;
+  if (winner) {
+    
+    status = 'Winner: ' + winner;
+  } else {
+    c++;
+    if(c==9)status='draw'
+    else
+    status = 'Next player: ' + (zero ? 'O' : 'X');
+  }
+
 
     return (
       <>
         <div className="board-row">
+        <div className="status">{status}</div>
           <Square value={squares[0]} onsquareclick={()=>handleclick(0)} />
           <Square value={squares[1]}  onsquareclick={()=>handleclick(1)}/>
           <Square value={squares[2]}  onsquareclick={()=>handleclick(2)}/>
@@ -72,4 +81,3 @@ function Square({ value,onsquareclick }) {
 
   }
     
-  
