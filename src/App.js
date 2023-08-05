@@ -1,25 +1,75 @@
 import logo from './logo.svg';
 import './App.css';
+import { useState } from 'react';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+//import './styles.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import App from './App';
+export default function Board() {
+    const [squares, setSquares] = useState(Array(9).fill(null));
+    const[zero,setzero]=useState(true);
+    function handleclick(i)
+    {
+        if(squares[i]||winnercalc(squares))return;
+        
+        const nextsquare=squares.slice();
+        if(zero)nextsquare[i]='0';
+        else nextsquare[i]='X';
 
-export default App;
+        setSquares(nextsquare);
+        setzero(!zero);
+
+    }
+    const winner=winnercalc(squares);
+    let status;
+     if(winner)status='winner is'+winner;
+     else status= 'next player:' +(zero ? 'O': 'X')
+
+    return (
+      <>
+        <div className="board-row">
+          <Square value={squares[0]} onsquareclick={()=>handleclick(0)} />
+          <Square value={squares[1]}  onsquareclick={()=>handleclick(1)}/>
+          <Square value={squares[2]}  onsquareclick={()=>handleclick(2)}/>
+        </div>
+        <div className="board-row">
+          <Square value={squares[3]}  onsquareclick={()=>handleclick(3)}/>
+          <Square value={squares[4]}  onsquareclick={()=>handleclick(4)}/>
+          <Square value={squares[5]}  onsquareclick={()=>handleclick(5)}/>
+        </div>
+        <div className="board-row">
+          <Square value={squares[6]}  onsquareclick={()=>handleclick(6)}/>
+          <Square value={squares[7]}  onsquareclick={()=>handleclick(7)}/>
+          <Square value={squares[8]}  onsquareclick={()=>handleclick(8)}/>
+        </div>
+      </>
+    );
+  }
+  
+function Square({ value,onsquareclick }) {
+    return <button className="square" onClick={onsquareclick}>{value}</button>;
+  }
+  function winnercalc(squares)
+  {
+    const line=[
+        [0,1,2],
+        [3,4,5],
+        [6,7,8],
+        [0,3,6],
+        [1,4,7],
+        [2,5,8],
+        [0,4,8],
+        [2,4,6]
+        ];
+        for(let i=0;i<line.length;++i){
+            const [a,b,c]=line[i];
+            if(squares[a]&&squares[a]===squares[b]&&squares[a]===squares[c])return squares[a];
+
+
+        }
+        return null;  
+
+  }
+    
+  
