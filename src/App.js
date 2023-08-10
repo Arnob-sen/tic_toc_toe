@@ -63,12 +63,19 @@ function Square({ value,onsquareclick }) {
   {
        const[zero,setzero]=useState(true);
        const[history,sethistory]=useState([Array(9).fill(null)]);
-       const currentsquare=history[history.length-1];
+   //    const currentsquare=history[history.length-1];
+       const [currentmove,setcurrentmove]=useState(0);
+       const currentsquare=history[currentmove];
        function handleplay(nextsquare){
-        sethistory([...history,nextsquare]);
+        const nexthistory=[...history.slice(0,currentmove+1),nextsquare];
+
+        sethistory(nexthistory);
+        setcurrentmove(nexthistory.length-1);
         setzero(!zero);
        }
        function jumpto(nextmove){
+        setcurrentmove(nextmove);
+        setzero(nextmove%2===0);
         
        }
        const moves=history.map((squares,move)=>{
