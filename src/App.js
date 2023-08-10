@@ -6,9 +6,12 @@ import { createRoot } from 'react-dom/client';
 //import './styles.css';
 
 import App from './App';
-export default function Board() {
-    const [squares, setSquares] = useState(Array(9).fill(null));
-    const[zero,setzero]=useState(true);
+function Square({ value,onsquareclick }) {
+  return <button className="square" onClick={onsquareclick}>{value}</button>;
+}
+ function Board({zero,squares,onplay}) {
+   // const [squares, setSquares] = useState(Array(9).fill(null));
+   // const[zero,setzero]=useState(true);
     function handleclick(i)
     {
         if(squares[i]||winnercalc(squares))return;
@@ -17,8 +20,9 @@ export default function Board() {
         if(zero)nextsquare[i]='O';
         else nextsquare[i]='X';
 
-        setSquares(nextsquare);
-        setzero(!zero);
+        // setSquares(nextsquare);
+        // setzero(!zero);
+        onplay(nextsquare);
 
     }
     const winner=winnercalc(squares);
@@ -55,10 +59,53 @@ export default function Board() {
       </>
     );
   }
-  
-function Square({ value,onsquareclick }) {
-    return <button className="square" onClick={onsquareclick}>{value}</button>;
+  export default function Game()
+  {
+       const[zero,setzero]=useState(true);
+       const[history,sethistory]=useState([Array(9).fill(null)]);
+       const currentsquare=history[history.length-1];
+       function handleplay(nextsquare){
+        sethistory([...history,nextsquare]);
+        setzero(!zero);
+       }
+       function jumpto(nextmove){
+        
+       }
+       const moves=history.map((squares,move)=>{
+        let description;
+        if(move>0)description='go to move #'+move;
+        else description='go to game start';
+        return (
+          <li>
+            <button onClick={()=>jumpto(move)}>
+              {description}
+            </button>
+          </li>
+
+        )
+       })
+       return(
+        <div className='game'>
+          <div className='game-board'>
+            <Board zero={zero} squares={currentsquare} onplay={handleplay}/>
+
+          </div>
+          <div className='game-info'>
+            <ol>
+              {moves}
+            </ol>
+          </div>
+        </div>
+       )
+
+
+
+
+
+
   }
+  
+
   function winnercalc(squares)
   {
     const line=[
